@@ -7,7 +7,7 @@ class LaptopList extends Component {
 
     componentDidMount() {
         this.callBestBuyLaptopApi()
-        .then(res => this.setState({ response: res.express }))
+        .then(res => this.setState({ response: res }))
         .catch(err => console.log(err));
     }
 
@@ -22,7 +22,7 @@ class LaptopList extends Component {
 
     render() {
         return (
-            <div>{this.state.response}</div>
+            <div>{JSON.stringify(this.state.response, null, 2) }</div>
         );
     }
 }
