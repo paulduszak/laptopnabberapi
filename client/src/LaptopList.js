@@ -6,9 +6,9 @@ import 'react-table/react-table.css';
 class LaptopList extends Component {
     state = {
         data: [],
-        page: 0,
+        page: '*',
         pages: -1,
-        pageSize: 10,
+        pageSize: 20,
         loading: false
     };
 
@@ -39,8 +39,14 @@ class LaptopList extends Component {
                 columns={ columns } 
                 onFetchData={ (state, instance) => {
                     this.setState({loading:true});
-                    axios.get('/api/bestbuy')
+                    axios.get('/api/bestbuy', {
+                        params: {
+                            page: this.state.page,
+                            pageSize: this.state.pageSize
+                        }
+                    })
                     .then((res) => {
+                        console.log(res);
                         this.setState({
                             data: res.data.products,
                             page: res.data.nextCursorMark,
