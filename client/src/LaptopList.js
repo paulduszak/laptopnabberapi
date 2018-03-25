@@ -1,48 +1,55 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
 
 class LaptopList extends Component {
     state = {
-        response: ''
+        data: [],
+        page: 0,
+        pages: -1,
+        pageSize: 10,
+        loading: false
     };
-
-    componentDidMount() {
-        this.callBestBuyLaptopApi()
-        .then(res => this.setState({ response: res }))
-        .catch(err => console.log(err));
-    }
-
-    callBestBuyLaptopApi = async () => {
-        const response = await fetch('/api/bestbuy');
-        const body = await response.json();
-    
-        if (response.status !== 200) throw Error(body.message);
-    
-        return body;
-    }
 
     render() {
 
         const columns = [
             {
-                id:'sku',
                 Header: 'SKU',
-                accesspr: 'sku'
+                accessor: 'sku'
             },
             {
                 Header: 'Name',
-                accesspr: 'name'
+                accessor: 'name'
             },
             {
-                id: 'price',
                 Header: 'Price',
-                accesspr: 'salePrice'
+                accessor: 'salePrice'
             }
         ];
+        
         return (
-            //<div>{JSON.stringify(this.state.response, null, 2) }</div>
-            <ReactTable data={ this.state.response.products } columns={ columns } />
+            <ReactTable
+                manual
+                data={ this.state.data }
+                pages={ this.state.pages }
+                pageSize={ this.state.pageSize }
+                loading={this.state.loading }
+                columns={ columns } 
+                onFetchData={ (state, instance) => {
+                    this.setState({loading:true});
+                    axios.get('/api/bestbuy')
+                    .then((res) => {
+                        this.setState({
+                            data: res.data.products,
+                            page: res.data.nextCursorMark,
+                            pages: res.data.totalPages,
+                            loading: false
+                        })
+                    });
+                }}
+            />
         );
     }
 }
