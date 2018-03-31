@@ -6,10 +6,10 @@ const laptopSchema = new mongoose.Schema({
     modelNumber: { type: String, unqiue: true },
     details: { type: Object },
     color: { type: String },
-    onSale: { type: Boolean },
-    regularPrice: { type: Number },
-    salePrice: { type: Number },
-    percentSavings: { type: Number },
     thumbnailImage: { type: String},
     image: { type: String }
 });
+
+const Laptop = mongoose.model('Laptop', laptopSchema);
+
+module.exports = Laptop;
