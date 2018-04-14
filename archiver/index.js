@@ -1,6 +1,7 @@
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const axios = require('axios');
+const Laptop = require('./models/Laptop');
 
 dotenv.load({ path: '../.env.local' });
 
@@ -23,7 +24,25 @@ function queryBB(pageIn) {
     }
   })
   .then((res) => {
-    console.log(res.data.products);
+
+    for (key in res.data.products) {
+
+      var laptop = new Laptop({
+        manufacturer: res.data.products[key].manufacturer,
+        name: res.data.products[key].name,
+        modelNumber: res.data.products[key].modelNumber,
+        details: res.data.products[key].details,
+        color: res.data.products[key].color,
+        thumbnailImage: res.data.products[key].thumbnailImage,
+        image: res.data.products[key].image
+      });
+
+      laptop.save(function(err, laptop){
+        if (err) return console.error(err);
+        console.log(laptop.name);
+      });
+    }
+
     if (currPage < res.data.totalPages) {
       currPage += 1;
       queryBB(res.data.nextCursorMark);
