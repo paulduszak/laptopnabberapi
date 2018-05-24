@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 
 const laptopPricingSchema = new mongoose.Schema({
-    modelNumber: { type: String },
-    regularPrice: { type: Number },
-    salePrice: { type: Number },
-    percentSavings: { type: Number },
-    timestamp_day: { type: Date },
-    values_hour: { type: [Number] }
+    sku: {type: String, unique: true},
+    timestampDay: { type: Date, default: new Date() },
+    BB_regularPriceDayAvg: { type: Number },
+    BB_salePriceDayAvg: { type: Number },
+    BB_regularPriceHours: [ Number ],
+    BB_salePriceHours: [ Number ]
 });
 
 const LaptopPricing = mongoose.model('LaptopPricing', laptopPricingSchema);
