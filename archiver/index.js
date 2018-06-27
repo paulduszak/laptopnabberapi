@@ -15,72 +15,65 @@ mongoose.connection.on('error', (err) => {
   process.exit();
 });
 
-var currPage = 1;
-
 var successCallback = function(data, pageCount) {
-	//console.log(data);
-  for (key in data.products) {
 
-    let laptop = new Laptop({
-      manufacturer: data.products[key].manufacturer,
-      name: data.products[key].name,
-      modelNumber: data.products[key].modelNumber,
-      sku: data.products[key].sku,
-      details: data.products[key].details,
-      color: data.products[key].color,
-      thumbnailImage: data.products[key].thumbnailImage,
-      image: data.products[key].image
-    });
 
-    let currentHour = new Date().getHours();
-
-    let laptopPrice = new LaptopPricing({
-      sku: data.products[key].sku,
-      regularPrice: data.products[key].regularPrice,
-      salePrice: data.products[key].salePrice,
-      BB_regularPrice_hour: { currentHour : data.products[key].regularPrice },
-      BB_salePrice_hour: { currentHour : data.products[key].salePrice }
-    });
-
-    laptop.save(function(err, laptop){
-      if (err) return console.error(err);
-    });
-
-    LaptopPricing.findOneAndUpdate(
-      { sku: data.products[key].sku },
-      {
-        $set: {
-          sku: data.products[key].sku,
-          BB_regularPriceDayAvg: data.products[key].regularPrice,
-          BB_salePriceDayAvg: data.products[key].salePrice
-        },
-        $push: {
-          BB_regularPriceHours: data.products[key].regularPrice,
-          BB_salePriceHours: data.products[key].salePrice
-        }
-      }, 
-      {
-        upsert: true,
-        setDefaultsOnInsert: true
-      },
-      function (err, doc) {
-        if (err) return console.error(err);
-        
-      }
-    );
-  }
-
-  if(data.products.length >= pageCount){
-    Parsers.bestbuy(data.nextCursorMark, pageCount, successCallback);
-  } else {
-    process.exit();
-  }
-  
-  // return {
-	// 	'nextPage': data.nextCursorMark,
-	// 	'totalPages': data.totalPages
-	// }
 }
 
 
-Parsers.bestbuy('*', 20, successCallback);
+let promise = Parsers.bestbuy('*', 20)
+  .then((data, pageCount) => {
+
+    for (key in data.products) {
+      console.log(data)
+      let laptop = new Laptop({
+        manufacturer: data.products[key].manufacturer,
+        name: data.products[key].name,
+        modelNumber: data.products[key].modelNumber,
+        sku: data.products[key].sku,
+        details: data.products[key].details,
+        color: data.products[key].color,
+        thumbnailImage: data.products[key].thumbnailImage,
+        image: data.products[key].image
+      });
+      
+      Laptop
+        .update(
+          {sku: data.products[key].sku},
+          {$setOnInsert: laptop},
+          {upsert: true})
+        .then((doc) => {})
+        .catch((err) => {
+          return console.err(err);
+        })
+  
+  
+      LaptopPricing
+        .findOneAndUpdate(
+          { sku: data.products[key].sku },
+          {
+            $set: {
+              sku: data.products[key].sku,
+              BB_regularPriceDayAvg: data.products[key].regularPrice,
+              BB_salePriceDayAvg: data.products[key].salePrice
+            },
+            $push: {
+              BB_regularPriceHours: data.products[key].regularPrice,
+              BB_salePriceHours: data.products[key].salePrice
+            }
+          }, 
+          {
+            upsert: true,
+            setDefaultsOnInsert: true
+          })
+        .then((doc) => {})
+        .catch((err) => {
+          return console.error(err);
+        })
+    }
+
+    if(data.products.length != 0){
+      Parsers.bestbuy(data.nextCursorMark, pageCount);
+    }
+
+  });
