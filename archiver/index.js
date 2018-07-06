@@ -30,21 +30,19 @@ const updateBBDB = (products) => {
   let queries = [];
   for (key in products) {
     
-    let laptop = new Laptop({
-      manufacturer: products[key].manufacturer,
-      name: products[key].name,
-      modelNumber: products[key].modelNumber,
-      sku: products[key].sku,
-      details: products[key].details,
-      color: products[key].color,
-      thumbnailImage: products[key].thumbnailImage,
-      image: products[key].image
-    });
-    
     queries.push(Laptop
       .update(
         {sku: products[key].sku},
-        {$setOnInsert: laptop},
+        {$setOnInsert: {
+          manufacturer: products[key].manufacturer,
+          name: products[key].name,
+          modelNumber: products[key].modelNumber,
+          sku: products[key].sku,
+          details: products[key].details,
+          color: products[key].color,
+          thumbnailImage: products[key].thumbnailImage,
+          image: products[key].image
+        }},
         {upsert: true}).exec());
 
     queries.push(LaptopPricing
