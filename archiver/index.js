@@ -28,42 +28,43 @@ const walkBBAPI = (cursor = '*') =>
 
 const updateBBDB = (products) => {
   let queries = [];
-  for (key in products) {
-    
+
+  products.forEach(product => {
     queries.push(Laptop
       .update(
-        {sku: products[key].sku},
+        {sku: product.sku},
         {$setOnInsert: {
-          manufacturer: products[key].manufacturer,
-          name: products[key].name,
-          modelNumber: products[key].modelNumber,
-          sku: products[key].sku,
-          details: products[key].details,
-          color: products[key].color,
-          thumbnailImage: products[key].thumbnailImage,
-          image: products[key].image
+          manufacturer: product.manufacturer,
+          name: product.name,
+          modelNumber: product.modelNumber,
+          sku: product.sku,
+          details: product.details,
+          color: product.color,
+          thumbnailImage: product.thumbnailImage,
+          image: product.image
         }},
         {upsert: true}).exec());
 
     queries.push(LaptopPricing
       .findOneAndUpdate(
-        { sku: products[key].sku },
+        { sku: product.sku },
         {
           $set: {
-            sku: products[key].sku,
-            BB_regularPriceDayAvg: products[key].regularPrice,
-            BB_salePriceDayAvg: products[key].salePrice
+            sku: product.sku,
+            BB_regularPriceDayAvg: product.regularPrice,
+            BB_salePriceDayAvg: product.salePrice
           },
           $push: {
-            BB_regularPriceHours: products[key].regularPrice,
-            BB_salePriceHours: products[key].salePrice
+            BB_regularPriceHours: product.regularPrice,
+            BB_salePriceHours: product.salePrice
           }
         }, 
         {
           upsert: true,
           setDefaultsOnInsert: true
         }).exec());
-  }
+  });
+  
   return queries;
 }
 
