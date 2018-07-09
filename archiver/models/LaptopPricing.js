@@ -1,13 +1,16 @@
 const mongoose = require('mongoose');
+const DateOnly = require('mongoose-dateonly')(mongoose);
 
 const laptopPricingSchema = new mongoose.Schema({
-    sku: {type: String, unique: true},
-    timestampDay: { type: Date, default: new Date() },
-    BB_regularPriceDayAvg: { type: Number },
-    BB_salePriceDayAvg: { type: Number },
+    sku: {type: String, required: true },
+    date: { type: DateOnly },
+    BB_regularPriceDayAvg: { type: Number, required: true },
+    BB_salePriceDayAvg: { type: Number, required: true },
     BB_regularPriceHours: [ Number ],
     BB_salePriceHours: [ Number ]
 });
+
+laptopPricingSchema.index({ sku: 1, date: 1 }, { unique: true });
 
 const LaptopPricing = mongoose.model('LaptopPricing', laptopPricingSchema);
 

@@ -47,12 +47,24 @@ const updateBBDB = (products) => {
 
     queries.push(LaptopPricing
       .findOneAndUpdate(
-        { sku: product.sku },
+        { 
+          $and: [
+           { sku: {$eq: product.sku} },
+           { date: {$in: [ Date.now() ]} } 
+          ]
+        },
         {
-          $set: {
+          // $set: {
+          //   sku: product.sku,
+          //   date: new Date(),
+          //   BB_regularPriceDayAvg: product.regularPrice,
+          //   BB_salePriceDayAvg: product.salePrice
+          // },
+          $setOnInsert: {
             sku: product.sku,
+            date: Date.now(),
             BB_regularPriceDayAvg: product.regularPrice,
-            BB_salePriceDayAvg: product.salePrice
+            BB_salePriceDayAvg: product.salePrice           
           },
           $push: {
             BB_regularPriceHours: product.regularPrice,
