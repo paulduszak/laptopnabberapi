@@ -50,21 +50,15 @@ const updateBBDB = (products) => {
         { 
           $and: [
            { sku: {$eq: product.sku} },
-           { date: {$in: [ Date.now() ]} } 
+           { date: {$in: [Date.now()]} } 
           ]
         },
         {
-          // $set: {
-          //   sku: product.sku,
-          //   date: new Date(),
-          //   BB_regularPriceDayAvg: product.regularPrice,
-          //   BB_salePriceDayAvg: product.salePrice
-          // },
           $setOnInsert: {
             sku: product.sku,
             date: Date.now(),
-            BB_regularPriceDayAvg: product.regularPrice,
-            BB_salePriceDayAvg: product.salePrice           
+            BB_regularPriceDay: product.regularPrice,
+            BB_salePriceDay: product.salePrice           
           },
           $push: {
             BB_regularPriceHours: product.regularPrice,

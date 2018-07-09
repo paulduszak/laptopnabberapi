@@ -4,8 +4,8 @@ const DateOnly = require('mongoose-dateonly')(mongoose);
 const laptopPricingSchema = new mongoose.Schema({
     sku: {type: String, required: true },
     date: { type: DateOnly },
-    BB_regularPriceDayAvg: { type: Number, required: true },
-    BB_salePriceDayAvg: { type: Number, required: true },
+    BB_regularPriceDay: { type: Number, required: true },
+    BB_salePriceDay: { type: Number, required: true },
     BB_regularPriceHours: [ Number ],
     BB_salePriceHours: [ Number ]
 });
