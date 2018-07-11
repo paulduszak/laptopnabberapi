@@ -75,5 +75,9 @@ const updateBBDB = (products) => {
 }
 
 walkBBAPI()
-.then(result => Promise.all(updateBBDB(result)))
-.then((() => {process.exit()}))
+  .then(result => Promise.all(updateBBDB(result)))
+  .then((() => {process.exit()}))
+  .catch(err => {
+    console.error(err);
+    process.exit();
+  });
