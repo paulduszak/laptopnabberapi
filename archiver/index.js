@@ -1,11 +1,11 @@
 const dotenv = require('dotenv');
+
+dotenv.load({ path: './.env.local' });
+
 const mongoose = require('mongoose');
-const axios = require('axios');
 const Laptop = require('./models/Laptop');
 const LaptopPricing = require('./models/LaptopPricing')
 const Parsers = require('./parsers')
-
-dotenv.load({ path: '../.env.local' });
 
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.MONGODB_URI);

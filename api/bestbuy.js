@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-var bby = require('bestbuy')('***REMOVED***');
+var bby = require('bestbuy')('');
 
 router.get('/', function(req, res) {
     bby.products('condition=\"new\"&(categoryPath.id=abcat0502000)', {format: 'json', pageSize: req.query.pageSize, cursorMark: req.query.page, show:'manufacturer,name,modelNumber,details.value,color,thumbnailImage,image,regularPrice,salePrice,sku'}, function(err, data) {

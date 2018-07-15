@@ -1,4 +1,4 @@
-const bby = require('bestbuy')('***REMOVED***');
+const bby = require('bestbuy')(process.env.API_BBY_KEY);
 
 const Parsers = {
     bestbuy: (offset) => {
