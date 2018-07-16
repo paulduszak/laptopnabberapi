@@ -10,7 +10,7 @@ const Parsers = require('./parsers')
 mongoose.Promise = global.Promise;
 
 if (process.env.MONGODB_USER && process.env.MONGODB_PASS) {
-  mongoose.connect(process.env.MONGODB_URI, {user:process.env.MONGODB_USER, pass:process.env.MONGODB_PASS});
+  mongoose.connect(process.env.MONGODB_URI, {authSource:process.env.MONGODB_AUTHSRC,user:process.env.MONGODB_USER, pass:process.env.MONGODB_PASS});
 } else {
   mongoose.connect(process.env.MONGODB_URI);
 }
