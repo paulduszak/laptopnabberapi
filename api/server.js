@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 5000;
 
-const bestbuyApi = require('./api/bestbuy');
+const bestbuyApi = require('./bestbuy');
 
 app.use('/api/bestbuy', bestbuyApi);
 
